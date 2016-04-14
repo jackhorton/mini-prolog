@@ -7,11 +7,12 @@
 #include <cstdio>
 #include <string>
 
-extern int yylineno;
 void yyerror(char const * s) {
     fprintf(stderr, "%s\n", s);
 }
-int yylex(void);
+
+#include <lexer.h>
+
 %}
 
 %union {
@@ -25,15 +26,15 @@ int yylex(void);
 %%
 
 program
-    : facts_and_rules { printf("Hello world\n"); }
+    : statements
     ;
     
-facts_and_rules
-    : fact_or_rule FULL_STOP facts_and_rules
+statements
+    : statement FULL_STOP statements
     | /* empty */
     ;
 
-fact_or_rule
+statement
     : fact 
     /* | rule */
     ;

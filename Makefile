@@ -1,12 +1,14 @@
 # compilers
 CC := clang
-CFLAGS := -Wall -Wno-strict-aliasing -Iinclude
+CFLAGS := -Wall -Wno-strict-aliasing -Iinclude -std=c++11
 
 # directories
 INCLUDES_DIR := include
 BUILD_DIR := build
 EXEC_DIR := bin
-vpath %.cpp src:src/parser
+vpath %.cpp src
+vpath %.cpp src/parser
+vpath %.cpp src/nodes
 
 # files
 MAIN := src/main.cpp
