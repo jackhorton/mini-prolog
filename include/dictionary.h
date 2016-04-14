@@ -12,7 +12,6 @@ namespace prolog {
         Dictionary& insert(nodes::AbstractNode const& n);
         std::vector<nodes::AbstractNode const*> const* find(nodes::AbstractNode const& n) const;
     private:
-        Dictionary();
         std::vector<nodes::AbstractNode const*> clauses;
     };
 }

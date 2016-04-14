@@ -8,10 +8,10 @@ using std::unique_ptr;
 using std::move;
 using std::string;
 
-FactNode(std::unique_ptr<std::string> lit) : literal(std::move(lit)) {}
+FactNode::FactNode(unique_ptr<string> lit) : literal(move(lit)) {}
 
 string const& FactNode::get_literal() const {
-    return literal;
+    return *literal;
 } 
 
 bool FactNode::matches(FactNode const& n) const {

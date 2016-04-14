@@ -1,6 +1,6 @@
 # compilers
 CC := clang
-CFLAGS := -Wall -Wno-strict-aliasing -Iinclude -std=c++11
+CFLAGS := -Wall -Wno-strict-aliasing -Wno-deprecated-register -Iinclude -std=c++11
 
 # directories
 INCLUDES_DIR := include
