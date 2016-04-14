@@ -1,0 +1,53 @@
+/*
+ * bison parser generator for MiniProlog
+ * CS 456
+**/
+
+%{
+#include <cstdio>
+#include <string>
+
+extern int yylineno;
+void yyerror(char const * s) {
+    fprintf(stderr, "%s\n", s);
+}
+int yylex(void);
+%}
+
+%union {
+    char const* string_val;
+}
+
+%token FULL_STOP LITERAL STRING_CONST LPAREN RPAREN AND
+
+%error-verbose
+
+%%
+
+program
+    : facts_and_rules { printf("Hello world\n"); }
+    ;
+    
+facts_and_rules
+    : fact_or_rule FULL_STOP facts_and_rules
+    | /* empty */
+    ;
+
+fact_or_rule
+    : fact 
+    /* | rule */
+    ;
+
+fact
+    : LITERAL
+    | LITERAL LPAREN arguments RPAREN
+    ;
+
+arguments
+    : argument AND arguments
+    | argument
+    ;
+
+argument
+    : fact
+    ;
