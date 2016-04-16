@@ -1,12 +1,16 @@
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "nodes/AbstractNode.h"
 #include "dictionary.h"
 
 using namespace prolog;
+using namespace prolog::nodes;
 using std::string;
 using std::unique_ptr;
+using std::shared_ptr;
+using std::move;
 using std::vector;
 
 Dictionary& Dictionary::get() {
@@ -15,16 +19,16 @@ Dictionary& Dictionary::get() {
     return instance;
 }
 
-Dictionary& Dictionary::insert(nodes::AbstractNode const& n) {
-    clauses.push_back(&n);
+Dictionary& Dictionary::insert(nodes::AbstractNode* n) {
+    clauses.push_back(shared_ptr<AbstractNode>(n));
     
     return *this;
 }
 
-vector<nodes::AbstractNode const*> const* Dictionary::find(nodes::AbstractNode const& n) const {
-    vector<nodes::AbstractNode const*> *matches = new vector<nodes::AbstractNode const*>();
+unique_ptr<vector<shared_ptr<AbstractNode>>> Dictionary::find(AbstractNode& n) const {
+    unique_ptr<vector<shared_ptr<AbstractNode>>> matches(new vector<shared_ptr<AbstractNode>>());
     
-    for (nodes::AbstractNode const* clause : clauses) {
+    for (auto clause : clauses) {
         if (n.matches(*clause)) {
             matches->push_back(clause);
         }

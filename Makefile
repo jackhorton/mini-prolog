@@ -1,6 +1,7 @@
 # compilers
 CC := clang
 CFLAGS := -Wall -Wno-strict-aliasing -Wno-deprecated-register -Iinclude -std=c++11
+LFLAGS := -lstdc++
 
 # directories
 INCLUDES_DIR := include
@@ -22,10 +23,10 @@ OBJS := $(addprefix $(BUILD_DIR)/,$(addsuffix .o, $(notdir $(basename $(SOURCES)
 
 # Sort out sad platform discrepencies
 ifeq ($(shell uname -s), Darwin)
-	LEXFLAG := -ll
+	LFLAGS += -ll
 	CFLAGS += -DOSX=1 -DLINUX=0
 else
-	LEXFLAG := -lfl
+	LFLAGS += -lfl
 	CFLAGS += -DOSX=0 -DLINUX=1
 endif
 
@@ -44,19 +45,20 @@ $(BUILD_DIR)/%.o: %.cpp
 
 prolog: $(OBJS)
 	@echo "\nBuilding program $(EXEC_NAME)..."
-	$(CC) $(CFLAGS) $(LEXFLAG) $(OBJS) -o $(EXEC_DIR)/$(EXEC_NAME)
+	$(CC) $(CFLAGS) $(LFLAGS) $(OBJS) -o $(EXEC_DIR)/$(EXEC_NAME)
 
 parser: 
 	@echo "\nGenerating parser..."
 	flex --header-file=$(INCLUDES_DIR)/lexer.h -o $(LEXER_GEN) $(LEXER)
 	bison --defines=$(INCLUDES_DIR)/parser.h -o $(PARSER_GEN) $(PARSER)
 
-run: prolog
+run: all
 	@echo "\nRunning..."
 	./$(EXEC_DIR)/$(EXEC_NAME)
 
 clean:
 	rm -r $(BUILD_DIR)
 	rm $(PARSER_GEN)
+	rm $(LEXER_GEN)
 
 .PHONY: prelude prolog parser run clean

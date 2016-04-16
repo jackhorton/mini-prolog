@@ -2,10 +2,20 @@
 #define PROLOG_ABSTRACTNODE_H
 
 namespace prolog {
-    namespace nodes {
+    namespace nodes {   
+        namespace types {
+            enum NodeType {
+                Abstract,
+                Fact,
+                Test
+            };
+        }
+        
         class AbstractNode {
         public:
-            virtual bool matches(AbstractNode const& n) const = 0;
+            AbstractNode(types::NodeType t) : type(t) {};
+            virtual bool matches(AbstractNode const& n) = 0;
+            const types::NodeType type;
         };
     }
 }

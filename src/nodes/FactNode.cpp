@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "nodes/FactNode.h"
 
@@ -8,16 +9,17 @@ using std::unique_ptr;
 using std::move;
 using std::string;
 
-FactNode::FactNode(unique_ptr<string> lit) : literal(move(lit)) {}
+FactNode::FactNode(char const* lit) : AbstractNode(types::Fact), literal(new string(lit)) {}
 
 string const& FactNode::get_literal() const {
     return *literal;
 } 
 
-bool FactNode::matches(FactNode const& n) const {
-    return (literal->compare(n.get_literal()) == 0);
-}
-
-bool FactNode::matches(AbstractNode const& n) const {
-    return false;
+bool FactNode::matches(AbstractNode const& n) {
+    if (n.type == types::Fact) {
+        FactNode const* fact = static_cast<FactNode const*>(&n);
+        return (literal->compare(fact->get_literal()) == 0);
+    } else {
+        return false;
+    }
 }

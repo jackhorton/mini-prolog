@@ -6,20 +6,31 @@
 %{
 #include <cstdio>
 #include <string>
+#include <memory>
 
 void yyerror(char const * s) {
     fprintf(stderr, "%s\n", s);
 }
 
-#include <lexer.h>
+#include "nodes/all.h"
+#include "Dictionary.h"
+#include "lexer.h"
+
+using namespace prolog::nodes;
+using prolog::Dictionary;
+using std::unique_ptr;
+using std::string;
 
 %}
 
 %union {
     char const* string_val;
+    prolog::nodes::AbstractNode* node;
 }
 
-%token FULL_STOP LITERAL STRING_CONST LPAREN RPAREN AND
+%token<string_val> FULL_STOP LITERAL STRING_CONST LPAREN RPAREN AND
+
+%type<node> fact;
 
 %error-verbose
 
@@ -35,13 +46,13 @@ statements
     ;
 
 statement
-    : fact 
+    : fact { Dictionary::get().insert($1); }
     /* | rule */
     ;
 
 fact
-    : LITERAL
-    | LITERAL LPAREN arguments RPAREN
+    : LITERAL { $$ = new FactNode($1); }
+    /* | LITERAL LPAREN arguments RPAREN { $$ = nullptr; } */
     ;
 
 arguments
