@@ -9,18 +9,18 @@
 #include <memory>
 #include <iostream>
 
-void yyerror(void* scanner, char const * s) {
-    fprintf(stderr, "%s\n", s);
-}
-
 typedef void* yyscan_t;
 
 #include "nodes/all.h"
 #include "Dictionary.h"
 
+void yyerror(void* scanner, char const * s) {
+    fprintf(stderr, "%s\n", s);
+}
+
 #include "parser.h"
 #include "lexer.h"
-#include "main.h"
+#include "parser_setup.h"
 
 using namespace prolog::nodes;
 using prolog::Dictionary;

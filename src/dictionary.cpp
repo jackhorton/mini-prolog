@@ -28,12 +28,12 @@ Dictionary& Dictionary::insert(nodes::AbstractNode* n) {
     return *this;
 }
 
-unique_ptr<vector<shared_ptr<AbstractNode>>> Dictionary::find(AbstractNode& n) const {
-    unique_ptr<vector<shared_ptr<AbstractNode>>> matches(new vector<shared_ptr<AbstractNode>>());
+vector<shared_ptr<AbstractNode>> Dictionary::find(AbstractNode& n) const {
+    vector<shared_ptr<AbstractNode>> matches;
     
     for (auto clause : clauses) {
         if (n.matches(*clause)) {
-            matches->push_back(clause);
+            matches.push_back(clause);
         }
     }
     

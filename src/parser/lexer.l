@@ -7,8 +7,8 @@
 #include <string> // this is literally only here so that the compiler knows what `std::` is
 
 #include "nodes/all.h"
-#include "main.h"
 #include "parser.h"
+#include "parser_setup.h"
 
 using namespace prolog::nodes;
 

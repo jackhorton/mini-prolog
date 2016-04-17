@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "main.h"
+#include "parser_setup.h"
 #include "nodes/FactNode.h"
 #include "nodes/TestNode.h"
 #include "Dictionary.h"
@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     
     nodes::FactNode n1("apple");
     auto results = Dictionary::get().find(n1);
-    std::cout << (*results)[0]->to_string() << std::endl;
+    std::cout << results[0]->to_string() << std::endl;
         
     // nodes::AbstractNode *n1 = new nodes::FactNode("node1");
     // nodes::AbstractNode *n2 = new nodes::TestNode("node2");
