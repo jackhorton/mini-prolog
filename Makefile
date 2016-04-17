@@ -58,6 +58,8 @@ run: all
 
 clean:
 	rm -r $(BUILD_DIR)
+	rm $(INCLUDES_DIR)/lexer.h
+	rm $(INCLUDES_DIR)/parser.h
 	rm $(PARSER_GEN)
 	rm $(LEXER_GEN)
 

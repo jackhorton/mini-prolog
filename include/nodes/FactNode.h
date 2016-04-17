@@ -9,7 +9,8 @@ namespace prolog {
         public:
             FactNode(char const* lit);
             std::string const& get_literal() const;
-            virtual bool matches(AbstractNode const& n) override;
+            bool matches(AbstractNode const& n) override;
+            std::string to_string() override;
             
             const types::NodeType type = types::Fact;
         private:

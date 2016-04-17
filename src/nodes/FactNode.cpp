@@ -23,3 +23,7 @@ bool FactNode::matches(AbstractNode const& n) {
         return false;
     }
 }
+
+string FactNode::to_string() {
+    return string("FactNode: ") + *literal;
+}

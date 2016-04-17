@@ -1,6 +1,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <iostream>
 
 #include "nodes/AbstractNode.h"
 #include "dictionary.h"
@@ -21,6 +22,8 @@ Dictionary& Dictionary::get() {
 
 Dictionary& Dictionary::insert(nodes::AbstractNode* n) {
     clauses.push_back(shared_ptr<AbstractNode>(n));
+    
+    std::cout << "Inserted " << n->to_string() << " into dictionary" << std::endl;
     
     return *this;
 }

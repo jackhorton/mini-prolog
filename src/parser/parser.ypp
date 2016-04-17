@@ -7,14 +7,20 @@
 #include <cstdio>
 #include <string>
 #include <memory>
+#include <iostream>
 
-void yyerror(char const * s) {
+void yyerror(void* scanner, char const * s) {
     fprintf(stderr, "%s\n", s);
 }
 
+typedef void* yyscan_t;
+
 #include "nodes/all.h"
 #include "Dictionary.h"
+
+#include "parser.h"
 #include "lexer.h"
+#include "main.h"
 
 using namespace prolog::nodes;
 using prolog::Dictionary;
@@ -28,6 +34,11 @@ using std::string;
     prolog::nodes::AbstractNode* node;
 }
 
+/* we need full re-entrance to switch back and forth between query mode and rule mode */
+%define      api.pure full
+%lex-param   {yyscan_t scanner}
+%parse-param {yyscan_t scanner}
+
 %token<string_val> FULL_STOP LITERAL STRING_CONST LPAREN RPAREN AND
 
 %type<node> fact;
@@ -37,7 +48,7 @@ using std::string;
 %%
 
 program
-    : statements
+    : statements { std::cout << "Parsed correctly" << std::endl; }
     ;
     
 statements
