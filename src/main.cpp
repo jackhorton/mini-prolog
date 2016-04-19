@@ -21,13 +21,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Could not open file\n");
         exit(1);
     }
-    
-    FILE* queries = fdopen(0, "r");
-    if (queries == NULL) {
-        fprintf(stderr, "Could not open stdin\n");
-        exit(1);
-    }
-    
+        
     // set up the initial scanner
     yyscan_t scanner;
     yylex_init(&scanner);
@@ -37,13 +31,19 @@ int main(int argc, char **argv) {
     yyparse(scanner);
     
     // parse queries
-    // yyset_in(queries, scanner);
-    // yyparse(scanner);
+    std::string query;
+    YY_BUFFER_STATE buffer;
+    while (std::cin.good()) {
+        std::cout << "?- ";
+        std::getline(std::cin, query);
+        buffer = yy_scan_string(query.c_str(), scanner);
+        yyparse(scanner);
+        yy_delete_buffer(buffer, scanner);
+    }
     
     // finally, destroy the scanner and files
     yylex_destroy(scanner);
     fclose(input);
-    // fclose(queries);
     
     nodes::FactNode* n1 = new nodes::FactNode("mary");
     nodes::FactNode* n2 = new nodes::FactNode("joe");
