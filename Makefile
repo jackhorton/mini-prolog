@@ -15,8 +15,10 @@ vpath %.cpp src/nodes
 MAIN := src/main.cpp
 PARSER := src/parser/parser.ypp
 PARSER_GEN := $(addsuffix .gen.cpp, $(basename $(PARSER)))
+PARSER_H := $(addsuffix .h, include/parser/$(basename $(notdir $(PARSER))))
 LEXER := src/parser/lexer.l
 LEXER_GEN := $(addsuffix .gen.cpp, $(basename $(LEXER)))
+LEXER_H := $(addsuffix .h, include/parser/$(basename $(notdir $(LEXER))))
 EXEC_NAME := prolog
 SOURCES := $(shell find src -name *.cpp)
 OBJS := $(addprefix $(BUILD_DIR)/,$(addsuffix .o, $(notdir $(basename $(SOURCES)))))
@@ -34,7 +36,7 @@ all: prelude
 	$(MAKE) parser
 	$(MAKE) prolog
 
-prelude:
+prelude: clean
 	@mkdir -p $(INCLUDES_DIR)
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(EXEC_DIR)
@@ -49,18 +51,18 @@ prolog: $(OBJS)
 
 parser: 
 	@echo "\nGenerating parser..."
-	flex --header-file=$(INCLUDES_DIR)/lexer.h -o $(LEXER_GEN) $(LEXER)
-	bison --defines=$(INCLUDES_DIR)/parser.h -o $(PARSER_GEN) $(PARSER)
+	flex --header-file=$(LEXER_H) -o $(LEXER_GEN) $(LEXER)
+	bison --defines=$(PARSER_H) -o $(PARSER_GEN) $(PARSER)
 
 run: all
 	@echo "\nRunning..."
 	./$(EXEC_DIR)/$(EXEC_NAME)
 
 clean:
-	rm -r $(BUILD_DIR)
-	rm $(INCLUDES_DIR)/lexer.h
-	rm $(INCLUDES_DIR)/parser.h
-	rm $(PARSER_GEN)
-	rm $(LEXER_GEN)
+	rm -rf $(BUILD_DIR)
+	rm -f $(PARSER_H)
+	rm -f $(LEXER_H)
+	rm -f $(PARSER_GEN)
+	rm -f $(LEXER_GEN)
 
 .PHONY: prelude prolog parser run clean

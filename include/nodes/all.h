@@ -3,5 +3,6 @@
 
 #include "nodes/AbstractNode.h"
 #include "nodes/FactNode.h"
+#include "nodes/RelationNode.h"
 
 #endif

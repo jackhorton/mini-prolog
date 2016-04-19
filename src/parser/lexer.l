@@ -1,14 +1,13 @@
 %{
-// this is in raw C because the C++ version of flex on OS X doesnt want to play ball
-
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string> // this is literally only here so that the compiler knows what `std::` is
 
 #include "nodes/all.h"
-#include "parser.h"
-#include "parser_setup.h"
+#include "parser/NodeVector.h"
+#include "parser/parser.h"
+#include "parser/fix.h"
 
 using namespace prolog::nodes;
 

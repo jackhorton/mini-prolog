@@ -1,45 +1,66 @@
 #include <iostream>
 #include <string>
 #include <memory>
-
 #include <cstdlib>
 #include <cstdio>
 
-#include "parser_setup.h"
 #include "nodes/FactNode.h"
-#include "nodes/TestNode.h"
+#include "nodes/RelationNode.h"
 #include "Dictionary.h"
-#include "parser.h"
-#include "lexer.h"
-
-// int yyparse();
+#include "parser/NodeVector.h" // this needs to be here because what is proper linking
+#include "parser/fix.h"
+#include "parser/parser.h"
+#include "parser/lexer.h"
 
 using namespace prolog;
 
 int main(int argc, char **argv) {
     // for now, only parse files using clargs
-    FILE* input = fopen("tests/basic-facts.pl", "r");
+    FILE* input = fopen("tests/facts-and-relations.pl", "r");
     if (input == NULL) {
         fprintf(stderr, "Could not open file\n");
         exit(1);
     }
-        
+    
+    FILE* queries = fdopen(0, "r");
+    if (queries == NULL) {
+        fprintf(stderr, "Could not open stdin\n");
+        exit(1);
+    }
+    
+    // set up the initial scanner
     yyscan_t scanner;
     yylex_init(&scanner);
-    yyset_in(input, scanner);
     
+    // parse the input file
+    yyset_in(input, scanner);
     yyparse(scanner);
     
-    yylex_destroy(scanner);
+    // parse queries
+    // yyset_in(queries, scanner);
+    // yyparse(scanner);
     
-    nodes::FactNode n1("apple");
-    auto results = Dictionary::get().find(n1);
-    std::cout << results[0]->to_string() << std::endl;
-        
-    // nodes::AbstractNode *n1 = new nodes::FactNode("node1");
-    // nodes::AbstractNode *n2 = new nodes::TestNode("node2");
-    // nodes::AbstractNode *n3 = new nodes::TestNode("node2");
-
-    // std::cout << n1->matches(*n2) << std::endl;
-    // std::cout << n2->matches(*n3) << std::endl;
+    // finally, destroy the scanner and files
+    yylex_destroy(scanner);
+    fclose(input);
+    // fclose(queries);
+    
+    nodes::FactNode* n1 = new nodes::FactNode("mary");
+    nodes::FactNode* n2 = new nodes::FactNode("joe");
+    nodes::FactNode n3("apple");
+    std::vector<nodes::AbstractNode*> args {n1, n2};
+    nodes::RelationNode relation("likes", args);
+    auto results = Dictionary::get().find(relation);
+    if (results.size() > 0) {
+        std::cout << results[0]->to_string() << std::endl;
+    } else {
+        std::cout << "No matches found" << std::endl;
+    }
+    
+    results = Dictionary::get().find(n3);
+    if (results.size() > 0) {
+        std::cout << results[0]->to_string() << std::endl;
+    } else {
+        std::cout << "No matches found" << std::endl;
+    }
 }

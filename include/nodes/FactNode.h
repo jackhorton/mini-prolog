@@ -8,13 +8,12 @@ namespace prolog {
         class FactNode : public AbstractNode {
         public:
             FactNode(char const* lit);
+            ~FactNode();
             std::string const& get_literal() const;
             bool matches(AbstractNode const& n) override;
-            std::string to_string() override;
-            
-            const types::NodeType type = types::Fact;
+            std::string to_string() const override;
         private:
-            std::unique_ptr<std::string> literal;
+            std::string literal;
         };
     }
 }

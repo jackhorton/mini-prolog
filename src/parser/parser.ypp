@@ -9,39 +9,41 @@
 #include <memory>
 #include <iostream>
 
-typedef void* yyscan_t;
-
 #include "nodes/all.h"
 #include "Dictionary.h"
 
+// making up for the unfortunate circumstances surrounding poorly-made GNU utilities
+typedef void* yyscan_t;
 void yyerror(void* scanner, char const * s) {
     fprintf(stderr, "%s\n", s);
 }
 
-#include "parser.h"
-#include "lexer.h"
-#include "parser_setup.h"
+#include "parser/NodeVector.h"
+#include "parser/parser.h"
+#include "parser/lexer.h"
+#include "parser/fix.h"
 
 using namespace prolog::nodes;
 using prolog::Dictionary;
-using std::unique_ptr;
-using std::string;
+using prolog::NodeVector;
 
 %}
 
 %union {
     char const* string_val;
     prolog::nodes::AbstractNode* node;
+    prolog::NodeVector* node_vec;
 }
 
-/* we need full re-entrance to switch back and forth between query mode and rule mode */
+/* playing around with re-entrance */
 %define      api.pure full
 %lex-param   {yyscan_t scanner}
 %parse-param {yyscan_t scanner}
 
 %token<string_val> FULL_STOP LITERAL STRING_CONST LPAREN RPAREN AND
 
-%type<node> fact;
+%type<node> fact argument;
+%type<node_vec> arguments;
 
 %error-verbose
 
@@ -62,15 +64,15 @@ statement
     ;
 
 fact
-    : LITERAL { $$ = new FactNode($1); }
-    /* | LITERAL LPAREN arguments RPAREN { $$ = nullptr; } */
+    : LITERAL                         { $$ = new FactNode($1); }
+    | LITERAL LPAREN arguments RPAREN { $$ = new RelationNode($1, $3->get_vector()); delete $3; }
     ;
 
 arguments
-    : argument AND arguments
-    | argument
+    : argument AND arguments { $$ = $3->push($1); }
+    | argument               { $$ = (new NodeVector())->push($1); }
     ;
 
 argument
-    : fact
+    : fact { $$ = $1; }
     ;
