@@ -6,7 +6,6 @@
 
 #include "nodes/FactNode.h"
 #include "nodes/RelationNode.h"
-#include "Dictionary.h"
 #include "parser/NodeVector.h" // this needs to be here because what is proper linking
 #include "parser/fix.h"
 #include "parser/parser.h"
@@ -16,7 +15,7 @@ using namespace prolog;
 
 int main(int argc, char **argv) {
     // for now, only parse files using clargs
-    FILE* input = fopen("tests/facts-and-relations.pl", "r");
+    FILE* input = fopen("tests/basic-bindings.pl", "r");
     if (input == NULL) {
         fprintf(stderr, "Could not open file\n");
         exit(1);
@@ -28,7 +27,7 @@ int main(int argc, char **argv) {
     
     // parse the input file
     yyset_in(input, scanner);
-    yyparse(scanner);
+    yyparse(scanner, false);
     
     // parse queries
     std::string query;
@@ -37,30 +36,13 @@ int main(int argc, char **argv) {
         std::cout << "?- ";
         std::getline(std::cin, query);
         buffer = yy_scan_string(query.c_str(), scanner);
-        yyparse(scanner);
+        yyparse(scanner, true);
         yy_delete_buffer(buffer, scanner);
     }
+    
+    std::cout << "Goodbye!" << std::endl;
     
     // finally, destroy the scanner and files
     yylex_destroy(scanner);
     fclose(input);
-    
-    nodes::FactNode* n1 = new nodes::FactNode("mary");
-    nodes::FactNode* n2 = new nodes::FactNode("joe");
-    nodes::FactNode n3("apple");
-    std::vector<nodes::AbstractNode*> args {n1, n2};
-    nodes::RelationNode relation("likes", args);
-    auto results = Dictionary::get().find(relation);
-    if (results.size() > 0) {
-        std::cout << results[0]->to_string() << std::endl;
-    } else {
-        std::cout << "No matches found" << std::endl;
-    }
-    
-    results = Dictionary::get().find(n3);
-    if (results.size() > 0) {
-        std::cout << results[0]->to_string() << std::endl;
-    } else {
-        std::cout << "No matches found" << std::endl;
-    }
 }

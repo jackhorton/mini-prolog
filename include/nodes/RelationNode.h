@@ -13,7 +13,7 @@ namespace prolog {
             RelationNode(std::string name, std::vector<AbstractNode*> args);
             ~RelationNode();
             std::string const& get_name() const;
-            bool matches(AbstractNode const& n) override;
+            bool matches(AbstractNode const& n) const override;
             std::string to_string() const override;
         private:
             const std::string name;

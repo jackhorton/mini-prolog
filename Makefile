@@ -10,6 +10,7 @@ EXEC_DIR := bin
 vpath %.cpp src
 vpath %.cpp src/parser
 vpath %.cpp src/nodes
+vpath %.cpp src/dictionary
 
 # files
 MAIN := src/main.cpp

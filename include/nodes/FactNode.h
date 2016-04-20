@@ -10,7 +10,7 @@ namespace prolog {
             FactNode(char const* lit);
             ~FactNode();
             std::string const& get_literal() const;
-            bool matches(AbstractNode const& n) override;
+            bool matches(AbstractNode const& n) const override;
             std::string to_string() const override;
         private:
             std::string literal;

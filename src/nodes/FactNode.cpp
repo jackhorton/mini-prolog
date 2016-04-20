@@ -1,6 +1,5 @@
 #include <string>
 #include <memory>
-#include <iostream>
 
 #include "nodes/FactNode.h"
 
@@ -17,14 +16,11 @@ string const& FactNode::get_literal() const {
     return literal;
 } 
 
-bool FactNode::matches(AbstractNode const& n) {
-    std::cout << "trying to match factnode " << literal << " against ";
+bool FactNode::matches(AbstractNode const& n) const {
     if (n.type == types::Fact) {
         FactNode const* fact = static_cast<FactNode const*>(&n);
-        std::cout << fact->literal << std::endl;
         return (literal.compare(fact->literal) == 0);
     } else {
-        std::cout << "another abstractnode" << std::endl;
         return false;
     }
 }

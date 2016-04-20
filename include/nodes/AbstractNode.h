@@ -15,7 +15,7 @@ namespace prolog {
         public:
             AbstractNode(types::NodeType t) : type(t) {};
             virtual ~AbstractNode() {};
-            virtual bool matches(AbstractNode const& n) = 0;
+            virtual bool matches(AbstractNode const& n) const = 0;
             virtual std::string to_string() const = 0;
             const types::NodeType type;
         };

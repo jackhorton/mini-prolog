@@ -27,7 +27,7 @@ string const& RelationNode::get_name() const {
     return name;
 } 
 
-bool RelationNode::matches(AbstractNode const& n) {
+bool RelationNode::matches(AbstractNode const& n) const {
     if (n.type == types::Relation) {
         RelationNode const* other = static_cast<RelationNode const*>(&n);
 
