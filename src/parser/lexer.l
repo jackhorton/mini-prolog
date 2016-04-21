@@ -5,7 +5,6 @@
 #include <string> // this is literally only here so that the compiler knows what `std::` is
 
 #include "nodes/all.h"
-#include "parser/NodeVector.h"
 #include "parser/parser.h"
 #include "parser/fix.h"
 
@@ -43,12 +42,21 @@ int line_number = 1;
     return FULL_STOP;
 }
 
+":-" {
+    return NECK;
+}
+
 \"[A-Za-z0-9]*\" {
     yylval->string_val = strdup(yytext);
 	return STRING_CONST;
 }
 
-[A-Za-z][A-Za-z0-9]* {
+[a-z][A-Za-z0-9]* {
 	yylval->string_val = strdup(yytext);
 	return LITERAL;
+}
+
+[A-Z][A-Za-z0-9]* {
+    yylval->string_val = strdup(yytext);
+    return BINDING;
 }

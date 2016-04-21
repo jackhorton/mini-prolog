@@ -7,7 +7,8 @@ namespace prolog {
             enum NodeType {
                 Abstract,
                 Fact,
-                Relation
+                Relation,
+                Arguments
             };
         }
         

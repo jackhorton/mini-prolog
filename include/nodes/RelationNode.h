@@ -5,19 +5,20 @@
 #include <vector>
 
 #include "nodes/AbstractNode.h"
+#include "nodes/ArgumentsNode.h"
 
 namespace prolog {
     namespace nodes {
         class RelationNode : public AbstractNode {
         public:
-            RelationNode(std::string name, std::vector<AbstractNode*> args);
+            RelationNode(std::string name, ArgumentsNode const* args);
             ~RelationNode();
             std::string const& get_name() const;
             bool matches(AbstractNode const& n) const override;
             std::string to_string() const override;
         private:
             const std::string name;
-            const std::vector<AbstractNode*> arguments;
+            ArgumentsNode const* arguments;
         };
     }
 }

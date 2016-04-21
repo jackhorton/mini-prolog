@@ -6,7 +6,6 @@
 
 #include "nodes/FactNode.h"
 #include "nodes/RelationNode.h"
-#include "parser/NodeVector.h" // this needs to be here because what is proper linking
 #include "parser/fix.h"
 #include "parser/parser.h"
 #include "parser/lexer.h"
@@ -15,7 +14,7 @@ using namespace prolog;
 
 int main(int argc, char **argv) {
     // for now, only parse files using clargs
-    FILE* input = fopen("tests/basic-bindings.pl", "r");
+    FILE* input = fopen("tests/facts-and-relations.pl", "r");
     if (input == NULL) {
         fprintf(stderr, "Could not open file\n");
         exit(1);

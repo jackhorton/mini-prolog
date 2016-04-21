@@ -4,5 +4,6 @@
 #include "nodes/AbstractNode.h"
 #include "nodes/FactNode.h"
 #include "nodes/RelationNode.h"
+#include "nodes/ArgumentsNode.h"
 
 #endif

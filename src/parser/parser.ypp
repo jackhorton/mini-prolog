@@ -10,47 +10,45 @@
 #include <iostream>
 
 #include "nodes/all.h"
-#include "Dictionary.h"
+#include "dictionary/Dictionary.h"
 
 // making up for the unfortunate circumstances surrounding poorly-made GNU utilities
 typedef void* yyscan_t;
-void yyerror(void* scanner, char const * s) {
+void yyerror(void* scanner, bool is_query, char const* s) {
     fprintf(stderr, "%s\n", s);
 }
 
-#include "parser/NodeVector.h"
 #include "parser/parser.h"
 #include "parser/lexer.h"
 #include "parser/fix.h"
 
 using namespace prolog::nodes;
 using prolog::Dictionary;
-using prolog::NodeVector;
 
 %}
 
 %union {
     char const* string_val;
     prolog::nodes::AbstractNode* node;
-    prolog::NodeVector* node_vec;
+    prolog::nodes::ArgumentsNode* args_node; // this is to call push_front on args
 }
 
 /* playing around with re-entrance */
 %define      api.pure full
 %lex-param   {yyscan_t scanner}
-%parse-param {yyscan_t scanner}
+%parse-param {yyscan_t scanner} {bool is_query}
 
-%token<string_val> FULL_STOP LITERAL STRING_CONST LPAREN RPAREN AND
+%token<string_val> FULL_STOP LITERAL BINDING STRING_CONST LPAREN RPAREN AND NECK
 
-%type<node> fact argument;
-%type<node_vec> arguments;
+%type<node> statement_type fact relation rule rule_body argument;
+%type<args_node> arguments
 
 %error-verbose
 
 %%
 
 program
-    : statements { std::cout << "Parsed correctly" << std::endl; }
+    : statements
     ;
     
 statements
@@ -59,20 +57,49 @@ statements
     ;
 
 statement
-    : fact { Dictionary::get().insert($1); }
+    : statement_type { 
+        if (is_query) {
+            Dictionary::get().find($1).prompt(); 
+        } else {
+            Dictionary::get().insert($1);
+        }
+    }
+    ;
+
+statement_type
+    : fact
+    | relation
     /* | rule */
     ;
 
 fact
-    : LITERAL                         { $$ = new FactNode($1); }
-    | LITERAL LPAREN arguments RPAREN { $$ = new RelationNode($1, $3->get_vector()); delete $3; }
+    : LITERAL { $$ = new FactNode($1); }
+    ;
+
+relation
+    : LITERAL LPAREN arguments RPAREN { $$ = new RelationNode($1, $3); }
     ;
 
 arguments
-    : argument AND arguments { $$ = $3->push($1); }
-    | argument               { $$ = (new NodeVector())->push($1); }
+    : argument AND arguments { $$ = $3->push_front($1); }
+    | argument               { $$ = new ArgumentsNode($1); }
     ;
 
 argument
-    : fact { $$ = $1; }
+    : fact     { $$ = $1; }
+    /* | binding  { $$ = $1; } */
+    | relation { $$ = $1; }
     ;
+
+/* binding
+    : BINDING { $$ = new BindingNode($1); }
+    ; */
+
+/* rule
+    : relation NECK rule_body { $$ = new RuleNode($1, $3); }
+    ;
+
+rule_body
+    : relation AND rule_body
+    | relation
+    ; */
