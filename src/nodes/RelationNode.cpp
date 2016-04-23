@@ -3,8 +3,10 @@
 
 #include "nodes/RelationNode.h"
 #include "nodes/ArgumentsNode.h"
+#include "dictionary/QueryContext.h"
 
 using namespace prolog::nodes;
+using namespace prolog;
 using std::vector;
 using std::string;
 
@@ -25,11 +27,11 @@ string const& RelationNode::get_name() const {
     return name;
 } 
 
-bool RelationNode::matches(AbstractNode const& n) const {
+bool RelationNode::equals(AbstractNode const& n) const {
     if (n.type == types::Relation) {
         RelationNode const* other = static_cast<RelationNode const*>(&n);
 
-        if (name.compare(other->name) != 0 || !arguments->matches(*other->arguments)) {
+        if (name.compare(other->name) != 0 || !arguments->equals(*other->arguments)) {
             return false;
         }
         
@@ -39,8 +41,22 @@ bool RelationNode::matches(AbstractNode const& n) const {
     }
 }
 
-std::string RelationNode::to_string() const {
-    std::string ret("(RelationNode: "); 
+QueryContext& RelationNode::resolve(AbstractNode const& n, QueryContext& context) const {
+    if (n.type != types::Relation) {
+        return context.reject();
+    }
+    
+    RelationNode const& other = static_cast<RelationNode const&>(n);
+    
+    if (name.compare(other.name) != 0) {
+        return context.reject();
+    }
+    
+    return arguments->resolve(*other.arguments, context);
+}
+
+string RelationNode::to_string() const {
+    string ret("(RelationNode: "); 
     ret += "name: " + name + ", args: " + arguments->to_string() + ")";
     
     return ret;

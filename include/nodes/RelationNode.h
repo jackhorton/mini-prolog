@@ -6,6 +6,7 @@
 
 #include "nodes/AbstractNode.h"
 #include "nodes/ArgumentsNode.h"
+#include "dictionary/QueryContext.h"
 
 namespace prolog {
     namespace nodes {
@@ -14,10 +15,11 @@ namespace prolog {
             RelationNode(std::string name, ArgumentsNode const* args);
             ~RelationNode();
             std::string const& get_name() const;
-            bool matches(AbstractNode const& n) const override;
+            bool equals(AbstractNode const& n) const override;
+            QueryContext& resolve(AbstractNode const& n, QueryContext& context) const override;
             std::string to_string() const override;
         private:
-            const std::string name;
+            std::string const name;
             ArgumentsNode const* arguments;
         };
     }

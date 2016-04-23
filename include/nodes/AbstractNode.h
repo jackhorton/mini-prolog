@@ -1,14 +1,18 @@
 #ifndef PROLOG_ABSTRACTNODE_H
 #define PROLOG_ABSTRACTNODE_H
 
+#include <string>
+
+#include "dictionary/QueryContext.h"
+
 namespace prolog {
     namespace nodes {   
         namespace types {
             enum NodeType {
-                Abstract,
                 Fact,
                 Relation,
-                Arguments
+                Arguments,
+                Variable
             };
         }
         
@@ -16,7 +20,8 @@ namespace prolog {
         public:
             AbstractNode(types::NodeType t) : type(t) {};
             virtual ~AbstractNode() {};
-            virtual bool matches(AbstractNode const& n) const = 0;
+            virtual bool equals(AbstractNode const& n) const = 0;
+            virtual QueryContext& resolve(AbstractNode const& n, QueryContext& context) const = 0;
             virtual std::string to_string() const = 0;
             const types::NodeType type;
         };

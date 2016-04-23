@@ -12,7 +12,7 @@ namespace prolog {
     public:
         static Dictionary& get();
         Dictionary& insert(nodes::AbstractNode* n);
-        DictionaryResponse find(nodes::AbstractNode const* n) const;
+        DictionaryResponse find(nodes::AbstractNode const* query) const;
     private:
         std::vector<std::shared_ptr<nodes::AbstractNode>> clauses;
     };

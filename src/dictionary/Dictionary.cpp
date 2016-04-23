@@ -27,14 +27,17 @@ Dictionary& Dictionary::insert(nodes::AbstractNode* n) {
     return *this;
 }
 
-DictionaryResponse Dictionary::find(AbstractNode const* n) const {
+DictionaryResponse Dictionary::find(AbstractNode const* query) const {
     vector<shared_ptr<AbstractNode>> matches;
     
     for (auto clause : clauses) {
-        if (n->matches(*clause)) {
+        QueryContext context;
+        clause->resolve(*query, context);
+        
+        if (context.good()) {
             matches.push_back(clause);
         }
     }
     
-    return DictionaryResponse(n, matches);
+    return DictionaryResponse(query, matches);
 }

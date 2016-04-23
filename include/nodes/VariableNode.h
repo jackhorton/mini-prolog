@@ -1,5 +1,5 @@
-#ifndef PROLOG_FACTNODE_H
-#define PROLOG_FACTNODE_H
+#ifndef PROLOG_VARIABLENODE_H
+#define PROLOG_VARIABLENODE_H
 
 #include <string>
 
@@ -8,10 +8,10 @@
 
 namespace prolog {
     namespace nodes {
-        class FactNode : public AbstractNode {
+        class VariableNode : public AbstractNode {
         public:
-            FactNode(char const* lit);
-            ~FactNode();
+            VariableNode(char const* name);
+            ~VariableNode();
             std::string const& get_literal() const;
             bool equals(AbstractNode const& n) const override;
             QueryContext& resolve(AbstractNode const& n, QueryContext& context) const override;

@@ -35,17 +35,15 @@ void DictionaryResponse::prompt() const {
         return;
     }
     
+    if (match_len > 1) {
+        cout << "Found " << match_len << " results. Advancing through results with ';' is not currently supported" << endl;
+    }
+    
     for (uint32_t i = 0; i < match_len; i++) {
         cout << "true";
-        if (i < match_len - 1) {
-            cin.get(delimeter);
-            
-            if (delimeter != ';') {
-                cerr << "Invalid input" << endl;
-                exit(1);
-            }
-        } else {
-            cout << "." << endl;
+        if (i == match_len - 1) {
+            cout << ".";
         }
+        cout << endl;
     }
 }
