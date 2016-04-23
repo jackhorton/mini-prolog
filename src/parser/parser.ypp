@@ -22,15 +22,14 @@ void yyerror(void* scanner, bool is_query, char const* s) {
 #include "parser/lexer.h"
 #include "parser/fix.h"
 
-using namespace prolog::nodes;
-using prolog::Dictionary;
+using namespace prolog;
 
 %}
 
 %union {
     char const* string_val;
-    prolog::nodes::AbstractNode* node;
-    prolog::nodes::ArgumentsNode* args_node; // this is to call push_front on args
+    prolog::AbstractNode* node;
+    prolog::ArgumentsNode* args_node; // this is to call push_front on args
 }
 
 /* playing around with re-entrance */

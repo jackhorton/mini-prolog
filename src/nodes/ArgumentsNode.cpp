@@ -8,7 +8,6 @@
 #include "nodes/ArgumentsNode.h"
 #include "nodes/AbstractNode.h"
 
-using namespace prolog::nodes;
 using namespace prolog;
 using std::string;
 using std::list;

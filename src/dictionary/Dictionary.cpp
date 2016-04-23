@@ -8,7 +8,6 @@
 #include "dictionary/DictionaryResponse.h"
 
 using namespace prolog;
-using namespace prolog::nodes;
 using std::string;
 using std::unique_ptr;
 using std::shared_ptr;
@@ -21,7 +20,7 @@ Dictionary& Dictionary::get() {
     return instance;
 }
 
-Dictionary& Dictionary::insert(nodes::AbstractNode* n) {
+Dictionary& Dictionary::insert(AbstractNode* n) {
     clauses.push_back(shared_ptr<AbstractNode>(n));
         
     return *this;

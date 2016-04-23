@@ -5,7 +5,6 @@
 #include "nodes/AbstractNode.h"
 #include "nodes/VariableNode.h"
 
-using namespace prolog::nodes;
 using namespace prolog;
 using std::pair;
 using std::string;

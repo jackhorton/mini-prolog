@@ -7,19 +7,17 @@
 #include "dictionary/QueryContext.h"
 
 namespace prolog {
-    namespace nodes {
-        class VariableNode : public AbstractNode {
-        public:
-            VariableNode(char const* name);
-            ~VariableNode();
-            std::string const& get_literal() const;
-            bool equals(AbstractNode const& n) const override;
-            QueryContext& resolve(AbstractNode const& n, QueryContext& context) const override;
-            std::string to_string() const override;
-        private:
-            std::string literal;
-        };
-    }
+    class VariableNode : public AbstractNode {
+    public:
+        VariableNode(char const* name);
+        ~VariableNode();
+        std::string const& get_literal() const;
+        bool equals(AbstractNode const& n) const override;
+        QueryContext& resolve(AbstractNode const& n, QueryContext& context) const override;
+        std::string to_string() const override;
+    private:
+        std::string literal;
+    };
 }
 
 #endif

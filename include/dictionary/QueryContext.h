@@ -6,19 +6,17 @@
 
 namespace prolog {
     // forward declarations to avoid circular dependencies
-    namespace nodes {
-        class AbstractNode;
-        class VariableNode;
-    }
+    class AbstractNode;
+    class VariableNode;
     
     class QueryContext {
     public:
         QueryContext();
         QueryContext& reject();
-        QueryContext& bind(nodes::VariableNode const& var, nodes::AbstractNode const* binding);
+        QueryContext& bind(VariableNode const& var, AbstractNode const* binding);
         bool good() const;
     private:
-        std::map<std::string, nodes::AbstractNode const*> bindings;
+        std::map<std::string, AbstractNode const*> bindings;
         bool failed;
     };
 }

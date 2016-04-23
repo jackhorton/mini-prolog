@@ -7,7 +7,6 @@
 #include "nodes/AbstractNode.h"
 #include "dictionary/DictionaryResponse.h"
 
-using namespace prolog::nodes;
 using namespace prolog;
 using std::vector;
 using std::shared_ptr;

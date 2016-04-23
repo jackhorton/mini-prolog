@@ -11,10 +11,10 @@ namespace prolog {
     class Dictionary {
     public:
         static Dictionary& get();
-        Dictionary& insert(nodes::AbstractNode* n);
-        DictionaryResponse find(nodes::AbstractNode const* query) const;
+        Dictionary& insert(AbstractNode* n);
+        DictionaryResponse find(AbstractNode const* query) const;
     private:
-        std::vector<std::shared_ptr<nodes::AbstractNode>> clauses;
+        std::vector<std::shared_ptr<AbstractNode>> clauses;
     };
 }
 

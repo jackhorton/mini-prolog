@@ -5,7 +5,6 @@
 #include "nodes/VariableNode.h"
 #include "dictionary/QueryContext.h"
 
-using namespace prolog::nodes;
 using namespace prolog;
 using std::string;
 

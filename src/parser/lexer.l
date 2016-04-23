@@ -8,7 +8,7 @@
 #include "parser/parser.h"
 #include "parser/fix.h"
 
-using namespace prolog::nodes;
+using namespace prolog;
 
 int line_number = 1;
 

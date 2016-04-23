@@ -9,12 +9,12 @@
 namespace prolog {
     class DictionaryResponse {
     public:
-        DictionaryResponse(nodes::AbstractNode const* root, std::vector<std::shared_ptr<nodes::AbstractNode>> const matches);
+        DictionaryResponse(AbstractNode const* root, std::vector<std::shared_ptr<AbstractNode>> const matches);
         ~DictionaryResponse();
         void prompt() const;
     private:
-        nodes::AbstractNode const* root; // owned
-        std::vector<std::shared_ptr<nodes::AbstractNode>> const matches;
+        AbstractNode const* root; // owned
+        std::vector<std::shared_ptr<AbstractNode>> const matches;
     };
 }
 
