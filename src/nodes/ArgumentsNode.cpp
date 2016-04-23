@@ -97,3 +97,15 @@ string ArgumentsNode::to_string() const {
     
     return ret;
 }
+
+string ArgumentsNode::debug_string() const {
+    string ret("(ArgumentsNode ");
+    
+    for (AbstractNode const* n : args) {
+        ret += n->debug_string() + ", ";
+    }
+    
+    ret += ")";
+    
+    return ret;
+}

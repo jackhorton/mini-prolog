@@ -1,6 +1,5 @@
 #include <map>
 #include <string>
-#include <iostream>
 
 #include "dictionary/QueryContext.h"
 #include "nodes/AbstractNode.h"
@@ -22,8 +21,6 @@ QueryContext& QueryContext::bind(VariableNode const& var, AbstractNode const* bi
     if (this->failed) {
         return *this;
     }
-    
-    std::cout << "Binding " << var.to_string() << " to " << binding->to_string() << std::endl;
     
     bindings.insert(pair<string, AbstractNode const*>(var.get_literal(), binding));
     

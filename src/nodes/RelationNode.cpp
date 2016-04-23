@@ -55,8 +55,12 @@ QueryContext& RelationNode::resolve(AbstractNode const& n, QueryContext& context
 }
 
 string RelationNode::to_string() const {
-    string ret("(RelationNode: "); 
-    ret += "name: " + name + ", args: " + arguments->to_string() + ")";
+    return string(name) + "(" + arguments->to_string() + ")";;
+}
+
+string RelationNode::debug_string() const {
+    string ret("(RelationNode "); 
+    ret += name + " " + arguments->debug_string() + ")";
     
     return ret;
 }

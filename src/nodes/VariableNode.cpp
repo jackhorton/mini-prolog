@@ -36,5 +36,9 @@ QueryContext& VariableNode::resolve(AbstractNode const& n, QueryContext& context
 }
 
 string VariableNode::to_string() const {
-    return string("VariableNode: ") + literal;
+    return string(literal);
+}
+
+string VariableNode::debug_string() const {
+    return string("(VariableNode ") + literal + ")";
 }

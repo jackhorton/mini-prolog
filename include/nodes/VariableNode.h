@@ -15,6 +15,7 @@ namespace prolog {
         bool equals(AbstractNode const& n) const override;
         QueryContext& resolve(AbstractNode const& n, QueryContext& context) const override;
         std::string to_string() const override;
+        std::string debug_string() const override;
     private:
         std::string literal;
     };

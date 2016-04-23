@@ -22,6 +22,7 @@ namespace prolog {
         virtual bool equals(AbstractNode const& n) const = 0;
         virtual QueryContext& resolve(AbstractNode const& n, QueryContext& context) const = 0;
         virtual std::string to_string() const = 0;
+        virtual std::string debug_string() const = 0;
         const types::NodeType type;
     };
 }

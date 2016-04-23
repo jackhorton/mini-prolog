@@ -46,5 +46,9 @@ QueryContext& FactNode::resolve(AbstractNode const& n, QueryContext& context) co
 }
 
 string FactNode::to_string() const {
-    return string("FactNode: ") + literal;
+    return string(literal);
+}
+
+string FactNode::debug_string() const {
+    return string("(FactNode ") + literal + ")";
 }
