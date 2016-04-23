@@ -21,22 +21,25 @@ Dictionary& Dictionary::get() {
 }
 
 Dictionary& Dictionary::insert(AbstractNode* n) {
-    clauses.push_back(shared_ptr<AbstractNode>(n));
+    clauses.push_back(n);
         
     return *this;
 }
 
 DictionaryResponse Dictionary::find(AbstractNode const* query) const {
-    vector<shared_ptr<AbstractNode>> matches;
+    DictionaryResponse response(query);
+    QueryContext* context;
     
     for (auto clause : clauses) {
-        QueryContext context;
-        clause->resolve(*query, context);
+        context = new QueryContext();
+        clause->resolve(*query, *context);
         
-        if (context.good()) {
-            matches.push_back(clause);
+        if (context->good()) {
+            response.add_solution(context);
+        } else {
+            delete context;
         }
     }
     
-    return DictionaryResponse(query, matches);
+    return response;
 }

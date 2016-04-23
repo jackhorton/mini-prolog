@@ -14,7 +14,7 @@ namespace prolog {
         Dictionary& insert(AbstractNode* n);
         DictionaryResponse find(AbstractNode const* query) const;
     private:
-        std::vector<std::shared_ptr<AbstractNode>> clauses;
+        std::vector<AbstractNode*> clauses;
     };
 }
 

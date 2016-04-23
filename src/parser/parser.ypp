@@ -39,7 +39,7 @@ using namespace prolog;
 
 %token<string_val> FULL_STOP LITERAL BINDING STRING_CONST LPAREN RPAREN AND NECK
 
-%type<node> statement_type fact relation rule rule_body argument;
+%type<node> statement_type fact binding relation rule rule_body argument;
 %type<args_node> arguments
 
 %error-verbose
@@ -86,13 +86,13 @@ arguments
 
 argument
     : fact     { $$ = $1; }
-    /* | binding  { $$ = $1; } */
+    | binding  { $$ = $1; }
     | relation { $$ = $1; }
     ;
 
-/* binding
-    : BINDING { $$ = new BindingNode($1); }
-    ; */
+binding
+    : BINDING { $$ = new VariableNode($1); }
+    ;
 
 /* rule
     : relation NECK rule_body { $$ = new RuleNode($1, $3); }

@@ -14,6 +14,7 @@ namespace prolog {
         QueryContext();
         QueryContext& reject();
         QueryContext& bind(VariableNode const& var, AbstractNode const* binding);
+        std::string to_string() const;
         bool good() const;
     private:
         std::map<std::string, AbstractNode const*> bindings;

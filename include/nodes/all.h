@@ -5,5 +5,6 @@
 #include "nodes/FactNode.h"
 #include "nodes/RelationNode.h"
 #include "nodes/ArgumentsNode.h"
+#include "nodes/VariableNode.h"
 
 #endif
