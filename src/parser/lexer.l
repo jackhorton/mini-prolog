@@ -51,7 +51,7 @@ int line_number = 1;
 	return STRING_CONST;
 }
 
-[a-z][A-Za-z0-9]* {
+[a-z0-9][A-Za-z0-9]* {
 	yylval->string_val = strdup(yytext);
 	return LITERAL;
 }

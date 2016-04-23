@@ -30,8 +30,12 @@ QueryContext& QueryContext::bind(VariableNode const& var, AbstractNode const* bi
 string QueryContext::to_string() const {
     string ret;
     
-    for (auto& binding : bindings) {
-        ret += binding.first + ": " + binding.second->to_string() + "\n";
+    if (bindings.size() == 0) {
+        ret = "true";
+    } else {
+        for (auto& binding : bindings) {
+            ret += binding.first + ": " + binding.second->to_string() + "\n";
+        }
     }
     
     return ret;
