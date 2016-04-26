@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 
+// dont include VariableNode and AbstractNode if you dont enjoy compiler errors
+
 namespace prolog {
     // forward declarations to avoid circular dependencies
     class AbstractNode;

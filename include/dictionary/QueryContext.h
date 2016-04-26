@@ -14,7 +14,7 @@ namespace prolog {
     
     class QueryContext {
     public:
-        QueryContext(uint32_t initial);
+        QueryContext(std::uint32_t initial);
         QueryContext(QueryContext const& source);
         QueryContext& reject();
         QueryContext& reject(std::uint32_t index);

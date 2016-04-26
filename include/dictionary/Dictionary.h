@@ -2,7 +2,6 @@
 #define PROLOG_DICTIONARY_H
 
 #include <vector>
-#include <memory>
 
 #include "nodes/AbstractNode.h"
 #include "dictionary/DictionaryResponse.h"

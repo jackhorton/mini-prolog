@@ -2,13 +2,12 @@
 #define PROLOG_EXPRESSIONNODE_H
 
 #include <string>
+#include <vector>
 
 #include "dictionary/QueryContext.h"
 #include "nodes/AbstractNode.h"
 
 namespace prolog {
-    class AbstractNode;
-    
     class ExpressionNode : public AbstractNode {
     public:
         ExpressionNode(AbstractNode const* initial);

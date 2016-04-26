@@ -1,8 +1,6 @@
 #ifndef PROLOG_DICTRESPONSE_H
 #define PROLOG_DICTRESPONSE_H
 
-#include <vector>
-
 #include "dictionary/QueryContext.h"
 #include "nodes/AbstractNode.h"
 

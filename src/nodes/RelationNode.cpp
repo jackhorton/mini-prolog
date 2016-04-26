@@ -1,5 +1,4 @@
 #include <string>
-#include <memory>
 
 #include "nodes/RelationNode.h"
 #include "nodes/ArgumentsNode.h"
@@ -9,10 +8,6 @@ using namespace prolog;
 using std::vector;
 using std::string;
 
-/*
- * RelationNodes own the AbstractNode objects pointed to by the arguments.
- * When this node is deleted/goes out of scope, its argument nodes will be deleted
- */
 RelationNode::RelationNode(string name, ArgumentsNode const* args)
   : AbstractNode(types::Relation)
   , name(name)

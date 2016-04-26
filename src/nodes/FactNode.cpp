@@ -38,7 +38,6 @@ QueryContext& FactNode::resolve(AbstractNode const& n, QueryContext& context) co
     } else if (n.type == types::Variable) {
         VariableNode const& other = static_cast<VariableNode const&>(n);
         
-        // assumes that `this` will outlive the context, which should be accurate
         return context.bind(other, this);
     } else {
         return context.reject();

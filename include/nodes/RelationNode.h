@@ -2,7 +2,6 @@
 #define PROLOG_RELATIONNODE_H
 
 #include <string>
-#include <vector>
 
 #include "nodes/AbstractNode.h"
 #include "nodes/ArgumentsNode.h"
