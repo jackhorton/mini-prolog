@@ -48,6 +48,8 @@ QueryContext& QueryContext::trim() {
         }
     }
     
+    solutions = trimmed;
+    
     return *this;
 }
 

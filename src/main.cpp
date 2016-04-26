@@ -13,7 +13,7 @@ using namespace prolog;
 
 int main(int argc, char **argv) {
     // for now, only parse files using clargs
-    FILE* input = fopen("tests/school.pl", "r");
+    FILE* input = fopen("tests/family-tree.pl", "r");
     if (input == NULL) {
         fprintf(stderr, "Could not open file\n");
         exit(1);

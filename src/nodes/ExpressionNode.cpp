@@ -29,6 +29,10 @@ bool ExpressionNode::equals(AbstractNode const& other) const {
 }
 
 QueryContext& ExpressionNode::resolve(AbstractNode const& query, QueryContext& context) const {
+    if (!context.good()) {
+        return context;
+    }
+    
     Dictionary& dict = Dictionary::get();
     
     for (AbstractNode const* clause : clauses) {

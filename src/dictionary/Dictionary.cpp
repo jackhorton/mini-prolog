@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "nodes/AbstractNode.h"
 #include "dictionary/Dictionary.h"
@@ -31,7 +32,7 @@ QueryContext& Dictionary::resolve(AbstractNode const& query, QueryContext& conte
         }
         
         // add the solutions that we just found to the "after" state
-        return_context.absorb(ctx);
+        return_context.absorb(ctx.trim());
     }
     
     context = return_context.trim();

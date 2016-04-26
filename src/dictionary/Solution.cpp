@@ -13,15 +13,19 @@ Solution::Solution() : failed(false) {}
 
 Solution& Solution::reject() {
     failed = true;
-    
+
     return *this;
 }
 
 Solution& Solution::bind(VariableNode const& var, AbstractNode const* binding) {
-    if (this->failed) {
+    if (!this->good()) {
         return *this;
     }
     
+    auto iter = bindings.find(var.get_literal());
+    if (iter != bindings.end() && !iter->second->equals(*binding)) {
+        return this->reject();
+    }
     bindings.insert(pair<string, AbstractNode const*>(var.get_literal(), binding));
     
     return *this;
@@ -29,7 +33,7 @@ Solution& Solution::bind(VariableNode const& var, AbstractNode const* binding) {
 
 string Solution::to_string() const {
     string ret;
-    
+
     if (bindings.size() == 0 && !failed) {
         ret = "true";
     } else if (failed) {
@@ -39,7 +43,7 @@ string Solution::to_string() const {
             ret += binding.first + ": " + binding.second->to_string() + "\n";
         }
     }
-    
+
     return ret;
 }
 
