@@ -4,8 +4,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "nodes/FactNode.h"
-#include "nodes/RelationNode.h"
+#include "nodes/all.h"
 #include "parser/fix.h"
 #include "parser/parser.h"
 #include "parser/lexer.h"

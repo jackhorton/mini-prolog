@@ -26,20 +26,30 @@ Dictionary& Dictionary::insert(AbstractNode* n) {
     return *this;
 }
 
-DictionaryResponse Dictionary::find(AbstractNode const* query) const {
-    DictionaryResponse response(query);
-    QueryContext* context;
+QueryContext& Dictionary::resolve(AbstractNode const& query, QueryContext& context) const {
+    QueryContext return_context(0);
     
-    for (auto clause : clauses) {
-        context = new QueryContext();
-        clause->resolve(*query, *context);
-        
-        if (context->good()) {
-            response.add_solution(context);
-        } else {
-            delete context;
+    for (AbstractNode const* clause : clauses) {
+        // get a fresh copy of the incoming context
+        QueryContext ctx(context);
+        for (uint32_t i = 0; i < ctx.solution_count(); i++) {
+            ctx.set_working(i);
+            clause->resolve(query, ctx);
         }
+        
+        // add the solutions that we just found to the "after" state
+        return_context.absorb(ctx);
     }
     
-    return response;
+    context = return_context.trim();
+    
+    return context;
+}
+
+DictionaryResponse Dictionary::query(AbstractNode const* query) const {
+    QueryContext context(1);
+    
+    this->resolve(*query, context);
+    
+    return DictionaryResponse(query, context);
 }

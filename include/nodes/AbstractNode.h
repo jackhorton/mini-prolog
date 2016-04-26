@@ -11,7 +11,9 @@ namespace prolog {
             Fact,
             Relation,
             Arguments,
-            Variable
+            Variable,
+            Rule,
+            Expression
         };
     }
     

@@ -6,5 +6,7 @@
 #include "nodes/RelationNode.h"
 #include "nodes/ArgumentsNode.h"
 #include "nodes/VariableNode.h"
+#include "nodes/ExpressionNode.h"
+#include "nodes/RuleNode.h"
 
 #endif

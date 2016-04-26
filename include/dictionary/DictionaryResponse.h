@@ -9,13 +9,12 @@
 namespace prolog {
     class DictionaryResponse {
     public:
-        DictionaryResponse(AbstractNode const* root);
+        DictionaryResponse(AbstractNode const* root, QueryContext context);
         ~DictionaryResponse();
-        void add_solution(QueryContext* context);
         void prompt() const;
     private:
         AbstractNode const* root; // owned
-        std::vector<QueryContext*> solutions;
+        QueryContext context;
     };
 }
 

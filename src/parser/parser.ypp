@@ -29,18 +29,19 @@ using namespace prolog;
 %union {
     char const* string_val;
     prolog::AbstractNode* node;
-    prolog::ArgumentsNode* args_node; // this is to call push_front on args
+    prolog::ArgumentsNode* args_node; // this is to call `push*` on args
+    prolog::ExpressionNode* expr_node; // this is to call `and` on expression
 }
 
-/* playing around with re-entrance */
 %define      api.pure full
 %lex-param   {yyscan_t scanner}
 %parse-param {yyscan_t scanner} {bool is_query}
 
 %token<string_val> FULL_STOP LITERAL BINDING STRING_CONST LPAREN RPAREN AND NECK
 
-%type<node> statement_type fact binding relation rule rule_body argument;
+%type<node> statement_type fact binding relation rule argument;
 %type<args_node> arguments
+%type<expr_node> expression
 
 %error-verbose
 
@@ -58,7 +59,7 @@ statements
 statement
     : statement_type { 
         if (is_query) {
-            Dictionary::get().find($1).prompt(); 
+            Dictionary::get().query($1).prompt(); 
         } else {
             Dictionary::get().insert($1);
         }
@@ -68,7 +69,7 @@ statement
 statement_type
     : fact
     | relation
-    /* | rule */
+    | rule
     ;
 
 fact
@@ -94,11 +95,11 @@ binding
     : BINDING { $$ = new VariableNode($1); }
     ;
 
-/* rule
-    : relation NECK rule_body { $$ = new RuleNode($1, $3); }
+rule
+    : relation NECK expression { $$ = new RuleNode($1, $3); }
     ;
 
-rule_body
-    : relation AND rule_body
-    | relation
-    ; */
+expression
+    : expression AND relation { $$ = $1->add_clause($3); }
+    | relation                { $$ = new ExpressionNode($1); }
+    ;

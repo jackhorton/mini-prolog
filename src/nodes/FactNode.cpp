@@ -29,7 +29,7 @@ bool FactNode::equals(AbstractNode const& n) const {
 QueryContext& FactNode::resolve(AbstractNode const& n, QueryContext& context) const {
     if (n.type == types::Fact) {
         FactNode const& other = static_cast<FactNode const&>(n);
-        
+                
         if (literal.compare(other.literal) != 0) {
             return context.reject();
         }
