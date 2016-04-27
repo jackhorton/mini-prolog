@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "nodes/AbstractNode.h"
 #include "nodes/RuleNode.h"
@@ -26,11 +25,7 @@ bool RuleNode::equals(AbstractNode const& other) const {
 QueryContext& RuleNode::resolve(AbstractNode const& query, QueryContext& context) const {
     head->resolve(query, context);
     body->resolve(query, context);
-    
-    std::cout << "rrrrrrrrrrrrrrrrrrrrrrrrrrrrr" << std::endl;
-    std::cout << "Context after resolving RuleNode:\n" << context.debug_string() << std::endl;
-    std::cout << "rrrrrrrrrrrrrrrrrrrrrrrrrrrrr" << std::endl;
-    
+        
     return context;
 }
 

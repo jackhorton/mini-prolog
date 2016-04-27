@@ -1,6 +1,5 @@
 #include <map>
 #include <string>
-#include <iostream>
 
 #include "dictionary/Solution.h"
 #include "nodes/AbstractNode.h"
@@ -15,8 +14,6 @@ Solution::Solution() : failed(false) {}
 Solution& Solution::reject() {
     failed = true;
     
-    std::cout << "Rejecting " << this->debug_string() << std::endl;
-
     return *this;
 }
 

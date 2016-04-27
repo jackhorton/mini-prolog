@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include <iostream>
 
 #include "dictionary/QueryContext.h"
 #include "dictionary/Solution.h"
@@ -102,10 +101,6 @@ uint32_t QueryContext::solution_count() const {
 string QueryContext::to_string() const {
     string ret;
     
-    for (Solution const& solution : solutions) {
-        std::cout << solution.good() << std::endl;
-    }
-    
     if (solutions.size() == 0) {
         ret = "false.";
     } else {
@@ -118,7 +113,7 @@ string QueryContext::to_string() const {
             if (&solution == &solutions.back()) {
                 ret += ".";
             } else {
-                ret += ";";
+                ret += ";\n";
             }
         }
     }
