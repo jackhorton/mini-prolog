@@ -14,7 +14,8 @@ namespace prolog {
         ~ExpressionNode();
         bool equals(AbstractNode const& n) const override;
         ExpressionNode* add_clause(AbstractNode const* clause);
-        QueryContext& resolve(AbstractNode const& n, QueryContext& context) const override;
+        QueryContext& resolve(AbstractNode const& query, QueryContext& context) const override;
+        std::vector<std::string> get_variable_names() const override;
         std::string to_string() const override;
         std::string debug_string() const override;
     private:

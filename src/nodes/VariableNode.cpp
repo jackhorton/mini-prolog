@@ -1,12 +1,13 @@
 #include <string>
+#include <vector>
 
 #include "nodes/AbstractNode.h"
 #include "nodes/VariableNode.h"
 #include "dictionary/QueryContext.h"
 
 using namespace prolog;
-using std::move;
 using std::string;
+using std::vector;
 
 VariableNode::VariableNode(char const* lit) : AbstractNode(types::Variable), literal(string(lit)) {}
 
@@ -26,13 +27,20 @@ bool VariableNode::equals(AbstractNode const& n) const {
     }
 }
 
-QueryContext& VariableNode::resolve(AbstractNode const& n, QueryContext& context) const {
-    if (n.type == types::Variable) {
-        // can a variable resolve to another variable? probably but not right now
-        return context.reject();
+QueryContext& VariableNode::resolve(AbstractNode const& query, QueryContext& context) const {
+    if (query.type == types::Variable) {
+        auto other = static_cast<VariableNode const&>(query);
+        
+        context.working().alias(literal, other.literal);
     } else {
-        return context.bind(*this, &n);
+        context.working().bind(*this, &query);
     }
+    
+    return context;
+}
+
+vector<string> VariableNode::get_variable_names() const {
+    return vector<string> {literal};
 }
 
 string VariableNode::to_string() const {

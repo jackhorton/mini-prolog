@@ -64,12 +64,12 @@ bool ArgumentsNode::equals(AbstractNode const& n) const {
     return true;
 }
 
-QueryContext& ArgumentsNode::resolve(AbstractNode const& n, QueryContext& context) const {
-    if (n.type != types::Arguments) {
+QueryContext& ArgumentsNode::resolve(AbstractNode const& query, QueryContext& context) const {
+    if (query.type != types::Arguments) {
         return context.reject();
     }
     
-    ArgumentsNode const& other = static_cast<ArgumentsNode const&>(n);
+    ArgumentsNode const& other = static_cast<ArgumentsNode const&>(query);
     
     if (args.size() != other.args.size()) {
         return context.reject();
@@ -86,6 +86,20 @@ QueryContext& ArgumentsNode::resolve(AbstractNode const& n, QueryContext& contex
     }
     
     return context;
+}
+
+vector<string> ArgumentsNode::get_variable_names() const {
+    vector<string> ret;
+    
+    for (AbstractNode const* n : args) {
+        vector<string> nvars = n->get_variable_names();
+        if (!nvars.empty()) {
+            ret.reserve(ret.size() + nvars.size());
+            ret.insert(ret.end(), nvars.begin(), nvars.end());
+        }
+    }
+    
+    return ret;
 }
 
 string ArgumentsNode::to_string() const {

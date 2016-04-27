@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <iostream>
 
 #include "dictionary/QueryContext.h"
 #include "dictionary/Solution.h"
@@ -25,7 +26,32 @@ QueryContext& QueryContext::reject(uint32_t solution_index) {
     return *this;
 }
 
-QueryContext& QueryContext::absorb(QueryContext const& other) {
+QueryContext QueryContext::diff(QueryContext const& other) const {
+    QueryContext ret(0);
+    
+    for (Solution const& own_solution : solutions) {
+        bool should_insert = false;
+        
+        for (Solution const& input_solution : other.solutions) {
+            if (own_solution.equals(input_solution)) {
+                should_insert = true;
+                break;
+            }
+        }
+        
+        if (!own_solution.good()) {
+            should_insert = true;
+        }
+        
+        if (!should_insert) {
+            ret.solutions.push_back(own_solution);
+        }
+    }
+    
+    return ret;
+}
+
+QueryContext& QueryContext::absorb(QueryContext& other) {
     solutions.reserve(solutions.size() + other.solutions.size());
     solutions.insert(solutions.end(), other.solutions.begin(), other.solutions.end());
     
@@ -60,13 +86,13 @@ QueryContext& QueryContext::set_working(uint32_t index) {
 }
 
 QueryContext& QueryContext::bind(VariableNode const& var, AbstractNode const* binding) {
-    if (!solutions[working_index].good()) {
-        return *this;
-    }
-    
     solutions[working_index].bind(var, binding);
     
     return *this;
+}
+
+Solution& QueryContext::working() {
+    return solutions[working_index];
 }
 
 uint32_t QueryContext::solution_count() const {
@@ -76,13 +102,38 @@ uint32_t QueryContext::solution_count() const {
 string QueryContext::to_string() const {
     string ret;
     
+    for (Solution const& solution : solutions) {
+        std::cout << solution.good() << std::endl;
+    }
+    
     if (solutions.size() == 0) {
         ret = "false.";
     } else {
         for (Solution const& solution : solutions) {
+            if (!solution.good()) {
+                continue;
+            }
+            
             ret += solution.to_string();
+            if (&solution == &solutions.back()) {
+                ret += ".";
+            } else {
+                ret += ";";
+            }
         }
     }
+    
+    return ret;
+}
+
+string QueryContext::debug_string() const {
+    string ret("(QueryContext");
+    
+    for (Solution const& solution : solutions) {
+        ret += " " + solution.debug_string();
+    }
+    
+    ret += ")";
     
     return ret;
 }

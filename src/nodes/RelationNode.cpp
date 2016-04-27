@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 
 #include "nodes/RelationNode.h"
 #include "nodes/ArgumentsNode.h"
@@ -35,18 +36,23 @@ bool RelationNode::equals(AbstractNode const& n) const {
     }
 }
 
-QueryContext& RelationNode::resolve(AbstractNode const& n, QueryContext& context) const {
-    if (n.type != types::Relation) {
+QueryContext& RelationNode::resolve(AbstractNode const& query, QueryContext& context) const {
+    if (query.type != types::Relation || !context.good()) {
         return context.reject();
     }
     
-    RelationNode const& other = static_cast<RelationNode const&>(n);
+    // this does not currently support binding a RelationNode to a variable
+    RelationNode const& other = static_cast<RelationNode const&>(query);
     
     if (name.compare(other.name) != 0) {
         return context.reject();
     }
     
     return arguments->resolve(*other.arguments, context);
+}
+
+vector<string> RelationNode::get_variable_names() const {
+    return arguments->get_variable_names();
 }
 
 string RelationNode::to_string() const {

@@ -19,11 +19,14 @@ namespace prolog {
         QueryContext& reject();
         QueryContext& reject(std::uint32_t index);
         QueryContext& set_working(std::uint32_t index);
-        QueryContext& absorb(QueryContext const& other);
+        QueryContext diff(QueryContext const& other) const;
+        QueryContext& absorb(QueryContext& other);
         QueryContext& trim();
         QueryContext& bind(VariableNode const& var, AbstractNode const* binding);
+        Solution& working();
         std::uint32_t solution_count() const;
         std::string to_string() const;
+        std::string debug_string() const;
         bool good() const;
     private:
         std::vector<Solution> solutions;

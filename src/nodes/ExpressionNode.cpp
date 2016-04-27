@@ -1,4 +1,6 @@
 #include <vector>
+#include <string>
+#include <iostream>
 
 #include "dictionary/Dictionary.h"
 #include "nodes/AbstractNode.h"
@@ -33,13 +35,35 @@ QueryContext& ExpressionNode::resolve(AbstractNode const& query, QueryContext& c
         return context;
     }
     
+    std::cout << "aaaaaaaaaaaaaaaaaaaa" << std::endl;
+    std::cout << "Context before evaluating ExpressionNode:\n" << context.debug_string() << std::endl;
+    std::cout << "aaaaaaaaaaaaaaaaaaaa" << std::endl;
+    
     Dictionary& dict = Dictionary::get();
     
     for (AbstractNode const* clause : clauses) {
         dict.resolve(*clause, context);
     }
     
+    std::cout << "zzzzzzzzzzzzzzzzzzzz" << std::endl;
+    std::cout << "Context after evaluating ExpressionNode:\n" << context.debug_string() << std::endl;
+    std::cout << "zzzzzzzzzzzzzzzzzzzz" << std::endl;
+    
     return context;
+}
+
+vector<string> ExpressionNode::get_variable_names() const {
+    vector<string> ret;
+    
+    for (AbstractNode const* clause : clauses) {
+        vector<string> clausevars = clause->get_variable_names();
+        if (!clausevars.empty()) {
+            ret.reserve(ret.size() + clausevars.size());
+            ret.insert(ret.end(), clausevars.begin(), clausevars.end());
+        }
+    }
+    
+    return ret;
 }
 
 string ExpressionNode::to_string() const {
