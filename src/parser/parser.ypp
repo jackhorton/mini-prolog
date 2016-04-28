@@ -59,7 +59,7 @@ statements
 statement
     : statement_type { 
         if (is_query) {
-            Dictionary::get().query($1).prompt(); 
+            Dictionary::get().query($1); 
         } else {
             Dictionary::get().insert($1);
         }

@@ -31,9 +31,9 @@ QueryContext& VariableNode::resolve(AbstractNode const& query, QueryContext& con
     if (query.type == types::Variable) {
         auto other = static_cast<VariableNode const&>(query);
         
-        context.working().alias(literal, other.literal);
+        context.alias(literal, other.literal);
     } else {
-        context.working().bind(*this, &query);
+        context.bind(*this, &query);
     }
     
     return context;

@@ -2,10 +2,9 @@
 #define PROLOG_QUERYCONTEXT_H
 
 #include <vector>
+#include <map>
+#include <utility>
 #include <string>
-#include <cstdint>
-
-#include "dictionary/Solution.h"
 
 namespace prolog {
     // forward declarations to avoid circular dependencies
@@ -14,23 +13,25 @@ namespace prolog {
     
     class QueryContext {
     public:
-        QueryContext(std::uint32_t initial);
-        QueryContext(QueryContext const& source);
+        QueryContext();
+        QueryContext(QueryContext const* parent);
+        ~QueryContext();
         QueryContext& reject();
-        QueryContext& reject(std::uint32_t index);
-        QueryContext& set_working(std::uint32_t index);
-        QueryContext diff(QueryContext const& other) const;
-        QueryContext& absorb(QueryContext& other);
-        QueryContext& trim();
+        QueryContext& alias(std::string source, std::string target);
         QueryContext& bind(VariableNode const& var, AbstractNode const* binding);
-        Solution& working();
-        std::uint32_t solution_count() const;
+        std::pair<std::string, AbstractNode const*> find(VariableNode const& var) const;
+        QueryContext& create_child();
         std::string to_string() const;
         std::string debug_string() const;
+        void prompt() const;
         bool good() const;
     private:
-        std::vector<Solution> solutions;
-        std::uint32_t working_index;
+        std::string const& resolve_variable_name(std::string const& original_name) const;
+        bool status;
+        std::vector<QueryContext*> children;
+        std::map<std::string, AbstractNode const*> bindings;
+        std::map<std::string, std::string> aliases;
+        QueryContext const* parent;
     };
 }
 

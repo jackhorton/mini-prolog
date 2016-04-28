@@ -2,7 +2,7 @@
 
 #include "nodes/AbstractNode.h"
 #include "dictionary/Dictionary.h"
-#include "dictionary/DictionaryResponse.h"
+#include "dictionary/QueryContext.h"
 
 using namespace prolog;
 using std::string;
@@ -20,31 +20,20 @@ Dictionary& Dictionary::insert(AbstractNode* n) {
 }
 
 QueryContext& Dictionary::resolve(AbstractNode const& query, QueryContext& context) const {
-    QueryContext return_context(0);
-    
     for (AbstractNode const* clause : clauses) {
-        for (uint32_t i = 0; i < context.solution_count(); i++) {
-            QueryContext ctx(context);
-            ctx.set_working(i);
+        QueryContext& ctx = context.create_child();
             
-            clause->resolve(query, ctx);
-            
-            QueryContext diff = ctx.diff(context);
-            return_context.absorb(diff);
-        }
+        clause->resolve(query, ctx);
     }
-    
-    context = return_context;
     
     return context;
 }
 
-DictionaryResponse Dictionary::query(AbstractNode const* query) const {
-    QueryContext context(1);
-    
-    context.working().set_external_vars(*query);
+void Dictionary::query(AbstractNode const* query) const {
+    QueryContext context;
     
     this->resolve(*query, context);
     
-    return DictionaryResponse(query, context);
+    context.prompt();
+    delete query;
 }
