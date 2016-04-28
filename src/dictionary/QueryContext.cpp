@@ -40,7 +40,7 @@ QueryContext& QueryContext::bind(VariableNode const& var, AbstractNode const* bi
         return *this;
     }
     
-    auto found = this->find(var);
+    auto found = this->find(this->resolve_variable_name(var.get_literal()));
     string variable_name = found.first;
     AbstractNode const* bound_node = found.second;
     
@@ -55,19 +55,16 @@ QueryContext& QueryContext::bind(VariableNode const& var, AbstractNode const* bi
     return *this;
 }
 
-pair<string, AbstractNode const*> QueryContext::find(VariableNode const& var) const {
-    string const& variable_name = this->resolve_variable_name(var.get_literal());
-    AbstractNode const* bound_node;
+pair<string, AbstractNode const*> QueryContext::find(string const& variable_name) const {
+    AbstractNode const* bound_node = nullptr;
     
     auto existing_binding = bindings.find(variable_name);
     if (existing_binding != bindings.end()) {
         bound_node = existing_binding->second;
     }
     
-    if (parent == nullptr) {
-        bound_node = nullptr;
-    } else {
-        return parent->find(var);
+    if (bound_node == nullptr && parent != nullptr) {
+        return parent->find(variable_name);
     }
     
     return make_pair(variable_name, bound_node);
@@ -95,34 +92,43 @@ string const& QueryContext::resolve_variable_name(string const& original_name) c
 }
 
 string QueryContext::to_string() const {
+    if (parent == nullptr) {
+        return this->to_root_string();
+    } else {
+        return this->to_child_string();
+    }
+}
+
+std::string QueryContext::to_root_string() const {
+    bool is_first = false;
     string ret;
-    
-    // early exits
-    if (!status) {
-        // failed
-        // should never be called on children, so we can append the period
-        return "false.";
-    } else if (parent == nullptr) {
-        bool is_first = false;
         
-        for (QueryContext* ctx : children) {
-            if (!ctx->good()) {
-                continue;
-            }
-            
-            if (!is_first) {
-                is_first = true;
-            } else {
-                ret += ";\n";
-            }
-            
-            ret += ctx->to_string();
+    for (QueryContext* ctx : children) {
+        if (!ctx->good()) {
+            continue;
         }
         
-        ret += ".";
+        if (!is_first) {
+            is_first = true;
+        } else {
+            ret += ";\n";
+        }
         
-        return ret;
+        ret += ctx->to_child_string();
     }
+    
+    if (!is_first) {
+        // no successful children
+        ret = "false.";
+    } else {
+        ret += ".";
+    }
+    
+    return ret;
+}
+
+std::string QueryContext::to_child_string() const {
+    string ret;
     
     if (bindings.size() == 0) {
         ret = "true";
@@ -135,7 +141,7 @@ string QueryContext::to_string() const {
         }
         
         for (QueryContext* ctx : children) {
-            ret += ctx->to_string();
+            ret += ctx->to_child_string();
         }
     }
     

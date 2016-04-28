@@ -19,7 +19,7 @@ namespace prolog {
         QueryContext& reject();
         QueryContext& alias(std::string source, std::string target);
         QueryContext& bind(VariableNode const& var, AbstractNode const* binding);
-        std::pair<std::string, AbstractNode const*> find(VariableNode const& var) const;
+        std::pair<std::string, AbstractNode const*> find(std::string const& variable_name) const;
         QueryContext& create_child();
         std::string to_string() const;
         std::string debug_string() const;
@@ -27,6 +27,8 @@ namespace prolog {
         bool good() const;
     private:
         std::string const& resolve_variable_name(std::string const& original_name) const;
+        std::string to_root_string() const;
+        std::string to_child_string() const;
         bool status;
         std::vector<QueryContext*> children;
         std::map<std::string, AbstractNode const*> bindings;
