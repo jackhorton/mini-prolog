@@ -48,7 +48,7 @@ $(BUILD_DIR)/%.o: %.cpp
 
 prolog: $(OBJS)
 	@echo "\nBuilding program $(EXEC_NAME)..."
-	$(CC) $(CFLAGS) $(LFLAGS) $(OBJS) -o $(EXEC_DIR)/$(EXEC_NAME)
+	$(CC) $(CFLAGS) -o $(EXEC_DIR)/$(EXEC_NAME) $(OBJS) $(LFLAGS)
 
 parser: 
 	@echo "\nGenerating parser..."
