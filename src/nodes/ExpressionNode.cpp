@@ -37,13 +37,17 @@ QueryContext& ExpressionNode::resolve(AbstractNode const& query, QueryContext& c
     Dictionary& dict = Dictionary::get();
     
     for (AbstractNode const* clause : clauses) {
-        dict.resolve(*clause, context);
+        vector<QueryContext*> leaves = context.get_leaves();
         
-        // collapse children will get rid of duplicates that occur from multi-clause expressions
-        // if two clauses bind a single variable to the same thing, it doesnt matter,
-        // since any children of either resulting context will follow a different but functionally
-        // equal path up the tree to get the result
-        context.collapse_children();
+        for (QueryContext* leaf : leaves) {
+            dict.resolve(*clause, *leaf);
+        
+            // collapse children will get rid of duplicates that occur from multi-clause expressions
+            // if two clauses bind a single variable to the same thing, it doesnt matter,
+            // since any children of either resulting context will follow a different but functionally
+            // equal path up the tree to get the result
+            leaf->collapse_children();
+        }
     }
     
     return context;

@@ -22,6 +22,7 @@ namespace prolog {
         std::pair<std::string, AbstractNode const*> find(std::string const& variable_name) const;
         QueryContext& create_child();
         QueryContext& collapse_children();
+        std::vector<QueryContext*> get_leaves();
         std::string to_string() const;
         std::string debug_string() const;
         void set_external_vars(AbstractNode const& query);

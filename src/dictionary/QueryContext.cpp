@@ -209,6 +209,25 @@ std::string QueryContext::to_child_string(vector<string> const& important_vars) 
     return ret;
 }
 
+std::vector<QueryContext*> QueryContext::get_leaves() {
+    // base cases
+    if (!this->good()) {
+        return vector<QueryContext*>();
+    } else if (children.size() == 0) {
+        return vector<QueryContext*>(1, this);
+    }
+    
+    vector<QueryContext*> ret;
+    for (QueryContext* child : children) {
+        vector<QueryContext*> leaves = child->get_leaves();
+        for (QueryContext* leaf : leaves) {
+            ret.push_back(leaf);
+        }
+    }
+    
+    return ret;
+}
+
 string QueryContext::debug_string() const {
     string ret("(QueryContext");
     if (!this->good()) {
