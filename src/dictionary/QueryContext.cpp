@@ -4,6 +4,7 @@
 #include <utility>
 #include <cstddef>
 #include <iostream>
+#include <cstdint>
 
 #include "dictionary/QueryContext.h"
 #include "nodes/AbstractNode.h"
@@ -13,6 +14,7 @@ using namespace prolog;
 using std::string;
 using std::vector;
 using std::pair;
+using std::uint32_t;
 
 QueryContext::QueryContext() : status(true), parent(nullptr) {}
 QueryContext::QueryContext(QueryContext const* parent) : status(true), parent(parent) {}
@@ -78,6 +80,44 @@ QueryContext& QueryContext::create_child() {
     return *ctx;
 }
 
+QueryContext& QueryContext::collapse_children() {
+    vector<QueryContext*> collapsed;
+    
+    // TODO: fix memory leak
+    for (uint32_t i = 0; i < children.size(); i++) {
+        QueryContext* cur = children[i];
+        bool has_later_equivalent = false;
+        
+        // skip bad contexts early
+        if (!cur->good()) {
+            delete cur;
+            cur = nullptr;
+            continue;
+        }
+        
+        for (uint32_t k = i + 1; k < children.size(); k++) {
+            if (cur->equals(*children[k])) {
+                has_later_equivalent = true;
+                break;
+            }
+        }
+        
+        if (!has_later_equivalent) {
+            collapsed.push_back(cur);
+        } else {
+            delete cur;
+            cur = nullptr;
+            continue;
+        }
+    }
+    
+    children.clear();
+    children.reserve(collapsed.size());
+    children.insert(children.begin(), collapsed.begin(), collapsed.end());
+    
+    return *this;
+}
+
 string const& QueryContext::resolve_variable_name(string const& original_name) const {
     auto alias = aliases.find(original_name);
     if (alias != aliases.end()) {
@@ -95,7 +135,8 @@ string QueryContext::to_string() const {
     if (parent == nullptr) {
         return this->to_root_string();
     } else {
-        return this->to_child_string();
+        vector<string> temp;
+        return this->to_child_string(temp);
     }
 }
 
@@ -114,7 +155,7 @@ std::string QueryContext::to_root_string() const {
             ret += ";\n";
         }
         
-        ret += ctx->to_child_string();
+        ret += ctx->to_child_string(external_vars);
     }
     
     if (!is_first) {
@@ -127,21 +168,41 @@ std::string QueryContext::to_root_string() const {
     return ret;
 }
 
-std::string QueryContext::to_child_string() const {
+std::string QueryContext::to_child_string(vector<string> const& important_vars) const {
     string ret;
     
-    if (bindings.size() == 0) {
-        ret = "true";
-    } else {
-        for (auto& binding : bindings) {
-            ret += binding.first + ": " + binding.second->to_string();
-            if (&binding != &*bindings.rbegin()) {
-                ret += "\n";
+    if (!status) {
+        return ret;
+    } else if (children.size() != 0) {
+        for (QueryContext* ctx : children) {
+            string child_string = ctx->to_child_string(important_vars);
+            if (child_string.size() > 0) {
+                ret += child_string;
+                if (ctx != children.back()) {
+                    ret += "\n";
+                }
             }
         }
         
-        for (QueryContext* ctx : children) {
-            ret += ctx->to_child_string();
+        return ret;
+    }
+    
+    // we will only start adding to the string if this is a leaf
+    if (important_vars.size() == 0) {
+        ret = "true";
+    }
+    
+    bool is_first = true;
+    for (string const& var : important_vars) {
+        auto binding = this->find(var);
+        if (is_first) {
+            is_first = true;
+        } else {
+            ret += ";\n";
+        }
+        
+        if (binding.second != nullptr) {
+            ret += var + ": " + binding.second->to_string();
         }
     }
     
@@ -168,8 +229,39 @@ string QueryContext::debug_string() const {
     return ret;
 }
 
+void QueryContext::set_external_vars(AbstractNode const& query) {
+    external_vars = query.get_variable_names();
+}
+
 void QueryContext::prompt() const {
     std::cout << this->to_string() << std::endl;
+}
+
+bool QueryContext::equals(QueryContext const& other) const {
+    if (bindings.size() != other.bindings.size()) {
+        return false;
+    }
+    
+    auto own_binding = bindings.begin();
+    auto other_binding = other.bindings.begin();
+    
+    while (own_binding != bindings.end()) {
+        // maps are sorted, so going through linearly should be fine
+        if (own_binding->first.compare(other_binding->first) != 0) {
+            return false;
+        }
+        
+        if (!own_binding->second->equals(*other_binding->second)) {
+            return false;
+        }
+        
+        own_binding++;
+        other_binding++;
+    }
+    
+    // aliases can be compared using == because its a map<string, string>, and strings can be compared properly
+    // bindings, as a map<string, Node*>, was just checking pointer equality, which was not enough
+    return (status == other.status && aliases == other.aliases);
 }
 
 bool QueryContext::good() const {

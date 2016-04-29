@@ -32,6 +32,8 @@ QueryContext& Dictionary::resolve(AbstractNode const& query, QueryContext& conte
 void Dictionary::query(AbstractNode const* query) const {
     QueryContext context;
     
+    context.set_external_vars(*query);
+    
     this->resolve(*query, context);
     
     context.prompt();

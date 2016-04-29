@@ -14,7 +14,7 @@
 
 // making up for the unfortunate circumstances surrounding poorly-made GNU utilities
 typedef void* yyscan_t;
-void yyerror(void* scanner, bool is_query, char const* s) {
+void yyerror(void* scanner, char const* s) {
     fprintf(stderr, "%s\n", s);
 }
 
@@ -35,11 +35,11 @@ using namespace prolog;
 
 %define      api.pure full
 %lex-param   {yyscan_t scanner}
-%parse-param {yyscan_t scanner} {bool is_query}
+%parse-param {yyscan_t scanner}
 
-%token<string_val> FULL_STOP LITERAL BINDING STRING_CONST LPAREN RPAREN AND NECK
+%token<string_val> FULL_STOP LITERAL BINDING STRING_CONST LPAREN RPAREN AND NECK QUERY
 
-%type<node> statement_type fact binding relation rule argument;
+%type<node> clause query fact binding relation rule argument;
 %type<args_node> arguments
 %type<expr_node> expression
 
@@ -57,19 +57,19 @@ statements
     ;
 
 statement
-    : statement_type { 
-        if (is_query) {
-            Dictionary::get().query($1); 
-        } else {
-            Dictionary::get().insert($1);
-        }
-    }
+    : clause      { Dictionary::get().insert($1); }
+    | QUERY query { Dictionary::get().query($2); }
     ;
 
-statement_type
-    : fact
-    | relation
-    | rule
+query
+    : fact     { $$ = $1; }
+    | relation { $$ = $1; }
+    ;
+
+clause
+    : fact     { $$ = $1; }
+    | relation { $$ = $1; }
+    | rule     { $$ = $1; }
     ;
 
 fact

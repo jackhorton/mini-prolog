@@ -46,6 +46,10 @@ int line_number = 1;
     return NECK;
 }
 
+"?-" {
+    return QUERY;
+}
+
 \"[A-Za-z0-9]*\" {
     yylval->string_val = strdup(yytext);
 	return STRING_CONST;
